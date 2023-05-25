@@ -18,6 +18,8 @@ package v1alpha2
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"sigs.k8s.io/gateway-api/apis/v1beta1"
 )
 
 // +genclient
@@ -409,10 +411,7 @@ const (
 	GRPCHeaderMatchRegularExpression GRPCHeaderMatchType = "RegularExpression"
 )
 
-// +kubebuilder:validation:MinLength=1
-// +kubebuilder:validation:MaxLength=256
-// +kubebuilder:validation:Pattern=`^[A-Za-z0-9!#$%&'*+\-.^_\x60|~]+$`
-type GRPCHeaderName string
+type GRPCHeaderName v1beta1.HeaderName
 
 // GRPCRouteFilterType identifies a type of GRPCRoute filter.
 type GRPCRouteFilterType string
@@ -503,7 +502,6 @@ type GRPCRouteFilter struct {
 	// Support: Extended
 	//
 	// +optional
-	// <gateway:experimental>
 	ResponseHeaderModifier *HTTPHeaderFilter `json:"responseHeaderModifier,omitempty"`
 
 	// RequestMirror defines a schema for a filter that mirrors requests.
@@ -551,6 +549,8 @@ type GRPCBackendRef struct {
 	//   Condition MUST explain which cross-namespace reference is not allowed.
 	//
 	// Support: Core for Kubernetes Service
+	//
+	// Support: Extended for Kubernetes ServiceImport
 	//
 	// Support: Implementation-specific for any other resource
 	//

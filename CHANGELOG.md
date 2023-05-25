@@ -2,6 +2,10 @@
 
 ## Table of Contents
 
+- [v0.7.0](#v070)
+- [v0.7.0-rc2](#v070-rc2)
+- [v0.7.0-rc1](#v070-rc1)
+- [v0.6.2](#v062)
 - [v0.6.1](#v061)
 - [v0.6.0](#v060)
 - [v0.6.0-rc2](#v060-rc2)
@@ -21,6 +25,283 @@
 - [v0.1.0](#v010)
 - [v0.1.0-rc2](#v010-rc2)
 - [v0.1.0-rc1](#v010-rc1)
+
+# v0.7.0
+
+The v0.7.0 release focuses on refining and stabilizing existing APIs. This
+included a focus on both conformance tests and clarifying ambiguous parts of the
+API spec.
+
+## Features Graduating to Standard
+In addition to those broad focuses, 2 features are graduating to the
+standard channel:
+
+* GEP-1323: Response Header Modifiers (#1905, @robscott)
+* GEP-726: Path Redirects and Rewrites (#1905, @robscott)
+
+## GEPs
+There are a lot of interesting GEPs in the pipeline right now, but only some of
+these GEPs have made it to experimental status in time for v0.7.0. The GEPs
+highlighted below are both in an experimental state and are either entirely new
+(GEP-1748) or had significant new concepts introduced (GEP-713):
+
+### GEP-713: Policy Attachment
+This GEP received a major update, splitting policy attachment into two
+categories "Direct" and "Inherited". The new "Direct" mode enables a simplified
+form of policy attachment for targeting a single resource (#1565, @youngnick).
+
+### GEP-1748: Gateway API Interaction with Multi-Cluster Services
+A new GEP was introduced to define how Gateway API interacts with Multi-Cluster
+Services. At a high level, this states that ServiceImports have "Extended"
+support and can be used anywhere Services can throughout the API. There's a lot
+more nuance here, so for the full details, refer to the GEP. (#1843, @robscott)
+
+## Other Changes by Kind
+
+### Status Changes
+
+- The "Ready" Gateway and Listener condition has been reserved for future use.
+  (#1888, @howardjohn)
+- The UnsupportedAddress Listener condition reason has been moved to a Gateway
+  condition reason.  (#1888, @howardjohn)
+- The AddressNotAssigned Gateway condition reasons has moved from Accepted to
+  Programmed. (#1888, @howardjohn)
+- The NoResources Gateway condition reasons has moved from Ready to Programmed.
+  (#1888, @howardjohn)
+
+### Spec Cleanup
+
+- Clarification that port redirects should not add port number to Location
+  header for HTTP and HTTPS requests on 80 and 443. (#1908, @robscott)
+- Port redirect when empty will depend on the configured Redirect scheme (#1880,
+  @gauravkghildiyal)
+- Updated spec to clarify that Exact matches have precedence over Prefix matches
+  and RegularExpression matches have implementation specific precedence. (#1855,
+  @Xunzhuo)
+- The `gateway-exists-finalizer.gateway.networking.k8s.io` finalizer is no
+  longer required and is now just recommended. (#1917, @howardjohn)
+
+### Validation Fixes
+
+- Removes GRPCRoute method match defaulting to allow for matching all requests,
+  or matching only by header. (#1753, @skriss)
+- Update route validation to comply with RFC-3986 "p-char" characters. (#1644,
+  @jackstine)
+- Illegal names like " " will be not allowed for query param name in
+  HTTPQueryParamMatch. (#1796, @gyohuangxin)
+* Webhook: Port is now considered when validating that ParentRefs are unique
+  (#1995, @howardjohn)
+
+### Conformance
+
+- No conformance tests run by default anymore, including tests for GatewayClass
+  and Gateway. A new SupportGateway feature must be opted into in order to run
+  those tests (similar to what we've done previously for ReferenceGrant and
+  HTTPRoute). Also with this release, `EnableAllSupportedFeatures` enables all
+  Gateway AND Mesh features (where previously that was just Gateway). (#1894,
+  @shaneutt)
+- Gateways must publish the "Programmed" condition. (#1732, @robscott)
+- Add `all-features` flag to enable all supported feature conformance tests.
+  (#1642, @gyohuangxin)
+- A new SkipTests field has been added to the conformance test options to
+  opt-out of specific tests. (#1578, @mlavacca)
+- Added: conformance tests for http rewrite host and path filters. (#1622,
+  @LiorLieberman)
+- In Conformance tests, when a Route references a gateway having no listener
+  whose allowedRoutes criteria permit the route, the reason
+  NotAllowedByListeners should be used for the accepted condition. (#1669,
+  @mlavacca)
+- Support configurable timeout for GatewayObservedGenerationBump (#1887,
+  @Xunzhuo)
+- The conformance test HTTPRouteInvalidCrossNamespaceParentRef now requires the
+  HTTPRoute accepted condition to be failing with the ParentRefNotPermitted
+  reason. (#1694, @mlavacca)
+- The conformance tests always check that the HTTPRoute ResolvedRefs condition
+  is enforced, even when the status is true. (#1668, @mlavacca)
+- Checks for the NotAllowedByListeners reason on the HTTPRoute's Accepted: false
+  condition in the HTTPRouteInvalidCrossNamespaceParentRef conformance test.
+  (#1714, @skriss)
+- Added conformance test to verify that path matching precedence is
+  implemented correctly. (#1855, @Xunzhuo)
+- Remove a test that only covered redirect status without any other changes.
+  (#2007, @robscott)
+- Port redirect when empty will depend on the configured Redirect scheme (#1880,
+  @gauravkghildiyal)
+- Fixes for mesh conformance tests (#2017, @keithmattix)
+
+### Documentation
+
+- Updated outdated content on list of resources in installation guide page.
+  (#1857, @randmonkey)
+- Fix description of ReferenceGrant example in documentation by making it use
+  the correct resources. (#1864, @matteoolivi)
+- Fix grammar mistake in ReferenceGrant implementation guidelines. (#1865,
+  @matteoolivi)
+
+# v0.7.0-rc2
+
+We expect this to be our final release candidate before launching v0.7.0. This
+release candidate includes a variety of clarifications and conformance updates.
+The changelog below represents the changes since v0.7.0-rc1.
+
+## Changes by Kind
+
+### Spec Clarification
+
+- Port redirect when empty will depend on the configured Redirect scheme (#1880,
+  @gauravkghildiyal)
+
+### Conformance
+
+- Remove a test that only covered redirect status without any other changes.
+  (#2007, @robscott)
+- Port redirect when empty will depend on the configured Redirect scheme (#1880,
+  @gauravkghildiyal)
+
+### Validation Fixes
+
+* Webhook: Port is now considered when validating that ParentRefs are unique
+  (#1995, @howardjohn)
+
+# v0.7.0-rc1
+
+## Changes by Kind
+
+### Graduating to Standard
+
+- GEP-1323: Response Header Modifier has graduated to standard (#1905,
+  @robscott)
+- GEP-726: Path Redirects and Rewrites has graduated to the standard channel.
+  (#1874, @robscott)
+
+### Experimental GEPs
+
+- The Policy Attachment GEP received a major update, splitting policy attachment
+  into two categories "Direct" and "Inherited". The new "Direct" mode enables a
+  simplified form of policy attachment for targeting a single resource (#1565,
+  @youngnick)
+- A new GEP was introduced to define how Gateway API interacts with
+  Multi-Cluster Services (#1843, @robscott)
+
+### Status Changes
+
+- The "Ready" Gateway and Listener condition has been reserved for future use.
+  (#1888, @howardjohn)
+- The UnsupportedAddress Listener condition reason has been moved to a Gateway
+  condition reason.  (#1888, @howardjohn)
+- The AddressNotAssigned Gateway condition reasons has moved from Accepted to
+  Programmed. (#1888, @howardjohn)
+- The NoResources Gateway condition reasons has moved from Ready to Programmed.
+  (#1888, @howardjohn)
+
+### Spec Cleanup
+
+- Clarification that port redirects should not add port number to Location
+  header for HTTP and HTTPS requests on 80 and 443. (#1908, @robscott)
+- Updated spec to clarify that Exact matches have precedence over Prefix matches
+  and RegularExpression matches have implementation specific precedence. (#1855,
+  @Xunzhuo)
+- The `gateway-exists-finalizer.gateway.networking.k8s.io` finalizer is no
+  longer required and is now just recommended. (#1917, @howardjohn)
+
+### Validation Fixes
+
+- Removes GRPCRoute method match defaulting to allow for matching all requests,
+  or matching only by header. (#1753, @skriss)
+- Update route validation to comply with RFC-3986 "p-char" characters. (#1644,
+  @jackstine)
+- Illegal names like " " will be not allowed for query param name in
+  HTTPQueryParamMatch. (#1796, @gyohuangxin)
+
+### Conformance
+
+- No conformance tests run by default anymore, including tests for GatewayClass
+  and Gateway. A new SupportGateway feature must be opted into in order to run
+  those tests (similar to what we've done previously for ReferenceGrant and
+  HTTPRoute). Also with this release, `EnableAllSupportedFeatures` enables all
+  Gateway AND Mesh features (where previously that was just Gateway). (#1894,
+  @shaneutt)
+- Gateways must publish the "Programmed" condition. (#1732, @robscott)
+- Add `all-features` flag to enable all supported feature conformance tests.
+  (#1642, @gyohuangxin)
+- A new SkipTests field has been added to the conformance test options to
+  opt-out of specific tests. (#1578, @mlavacca)
+- Added: conformance tests for http rewrite host and path filters. (#1622,
+  @LiorLieberman)
+- In Conformance tests, when a Route references a gateway having no listener
+  whose allowedRoutes criteria permit the route, the reason
+  NotAllowedByListeners should be used for the accepted condition. (#1669,
+  @mlavacca)
+- Support configurable timeout for GatewayObservedGenerationBump (#1887,
+  @Xunzhuo)
+- The conformance test HTTPRouteInvalidCrossNamespaceParentRef now requires the
+  HTTPRoute accepted condition to be failing with the ParentRefNotPermitted
+  reason. (#1694, @mlavacca)
+- The conformance tests always check that the HTTPRoute ResolvedRefs condition
+  is enforced, even when the status is true. (#1668, @mlavacca)
+- Checks for the NotAllowedByListeners reason on the HTTPRoute's Accepted: false
+  condition in the HTTPRouteInvalidCrossNamespaceParentRef conformance test.
+  (#1714, @skriss)
+- Added conformance test to verify that path matching precedence is
+  implemented correctly. (#1855, @Xunzhuo)
+
+### Documentation
+
+- Updated outdated content on list of resources in installation guide page.
+  (#1857, @randmonkey)
+- Fix description of ReferenceGrant example in documentation by making it use
+  the correct resources. (#1864, @matteoolivi)
+- Fix grammar mistake in ReferenceGrant implementation guidelines. (#1865,
+  @matteoolivi)
+
+# v0.6.2
+
+This is a patch release that predominantly includes updated conformance tests
+for implementations to implement.
+
+For all major changes since the `v0.5.x` release series, please see the
+[v0.6.0](/#v060) release notes.
+
+## Maintenance
+
+- As per [changes in upstream to container image registries] we replaced all
+  usage of the k8s.gcr.io registry with registry.k8s.io.
+  (#1736, @shaneutt)
+
+[changes in upstream to container image registries]:https://github.com/kubernetes/k8s.io/issues/4738
+
+## Bug Fixes
+
+- Fix invalid HTTP redirect/rewrite examples.
+  (#1787, @Xunzhuo)
+
+## Conformance Test Updates
+
+- The `HTTPRouteInvalidCrossNamespaceParentRef` conformance test now checks for
+  the `NotAllowedByListeners` reason on the `HTTPRoute`'s `Accepted: false`
+  condition to better indicate why the route was note accepted.
+  (#1714, @skriss)
+- A conformance test was added for `HTTPRoute` to cover the behavior of a
+  non-matching `SectionName` similar to what was already present for
+  `ListenerPort`.
+  (#1719, @zaunist)
+- Fixed an issue where tests may fail erroneously on the removal of resources
+  that are already removed.
+  (#1745, @mlavacca)
+- Logging in conformance utilities related to resource's `ObservedGeneration`
+  has been improved to emit the `ObservedGenerations that are found for the
+  purpose of making it easier to debug test failures and be more verbose about
+  the objects in question.
+  (#1761, @briantkennedy)
+  (#1763, @briantkennedy)
+- Patch instead of update in some places in conformance tests to reduce noise
+  in logs.
+  (#1760, @michaelbeaumont)
+- Added `AttachedRoutes` testing to conformance tests.
+  (#1624, @ChaningHwang)
+- The conformance tests always check that the HTTPRoute ResolvedRefs condition
+  is enforced, even when the status is true.
+  (#1668, @mlavacca)
 
 # v0.6.1
 
@@ -777,7 +1058,7 @@ The following changes have been made since v0.3.0:
   Implemented in [#754](https://github.com/kubernetes-sigs/gateway-api/pull/754).
   Further documentation was added in [#762](https://github.com/kubernetes-sigs/gateway-api/pull/762).
 
-* Safer cross-namespace references ([GEP-709](https://gateway-api.sigs.k8s.io/geps/gep-709/)): 
+* Safer cross-namespace references ([GEP-709](https://gateway-api.sigs.k8s.io/geps/gep-709/)):
   This concerns (currently), references from Routes to Backends, and Gateways to
   Secrets. The new behavior is:
   * By default, references across namespaces are not permitted; creating a
@@ -839,7 +1120,7 @@ The following changes have been made since v0.3.0:
   GEP added in [#749](https://github.com/kubernetes-sigs/gateway-api/pull/749).
   Implemented in [#768](https://github.com/kubernetes-sigs/gateway-api/pull/768).
 
-  [GEP-851](https://github.com/kubernetes-sigs/gateway-api/blob/main/site-src/geps/gep-851.md)
+  [GEP-851](https://github.com/kubernetes-sigs/gateway-api/blob/main/geps/gep-851.md)
   was a follow up on this change that allowed multiple Certificate Refs per
   Gateway Listener. This was implemented in
   [#852](https://github.com/kubernetes-sigs/gateway-api/pull/852).
@@ -854,7 +1135,7 @@ The following changes have been made since v0.3.0:
 ### Small Changes
 * Extension points within match blocks from all Routes have been removed
   [#829](https://github.com/kubernetes-sigs/gateway-api/pull/829). Implements
-  [GEP-820](https://github.com/kubernetes-sigs/gateway-api/blob/main/site-src/geps/gep-820.md).
+  [GEP-820](https://github.com/kubernetes-sigs/gateway-api/blob/main/geps/gep-820.md).
   These extension points have been removed because they are currently not used,
   are poorly understood, and we don't have good use cases for them. We may
   consider re-adding them in the future.
@@ -1001,11 +1282,11 @@ The following changes have been made since v0.4.0-rc1:
 ### GEP implementations
 * Replace `CertificateRef` field with `CertificateRefs` in `GatewayTLSConfig`.
 [#852](https://github.com/kubernetes-sigs/gateway-api/pull/852). This implements
-[GEP-851](https://github.com/kubernetes-sigs/gateway-api/blob/main/site-src/geps/gep-851.md),
+[GEP-851](https://github.com/kubernetes-sigs/gateway-api/blob/main/geps/gep-851.md),
 Allow Multiple Certificate Refs per Gateway Listener.
 * Extension points within match blocks from all Routes have been removed
 [#829](https://github.com/kubernetes-sigs/gateway-api/pull/829). Implements
-[GEP-820](https://github.com/kubernetes-sigs/gateway-api/blob/main/site-src/geps/gep-820.md).
+[GEP-820](https://github.com/kubernetes-sigs/gateway-api/blob/main/geps/gep-820.md).
 These extension points have been removed because they are currently not used,
 are poorly understood, and we don't have good use cases for them. We may
 consider re-adding them in the future.

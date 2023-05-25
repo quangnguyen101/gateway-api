@@ -37,7 +37,10 @@ func init() {
 var GatewayObservedGenerationBump = suite.ConformanceTest{
 	ShortName:   "GatewayObservedGenerationBump",
 	Description: "A Gateway in the gateway-conformance-infra namespace should update the observedGeneration in all of its Status.Conditions after an update to the spec",
-	Manifests:   []string{"tests/gateway-observed-generation-bump.yaml"},
+	Features: []suite.SupportedFeature{
+		suite.SupportGateway,
+	},
+	Manifests: []string{"tests/gateway-observed-generation-bump.yaml"},
 	Test: func(t *testing.T, s *suite.ConformanceTestSuite) {
 
 		gwNN := types.NamespacedName{Name: "gateway-observed-generation-bump", Namespace: "gateway-conformance-infra"}
@@ -54,7 +57,7 @@ var GatewayObservedGenerationBump = suite.ConformanceTest{
 			require.NoErrorf(t, err, "error getting Gateway: %v", err)
 
 			// Sanity check
-			kubernetes.GatewayMustHaveLatestConditions(t, original)
+			kubernetes.GatewayMustHaveLatestConditions(t, s.TimeoutConfig, original)
 
 			all := v1beta1.NamespacesFromAll
 
@@ -81,7 +84,7 @@ var GatewayObservedGenerationBump = suite.ConformanceTest{
 			require.NoErrorf(t, err, "error getting Gateway: %v", err)
 
 			// Sanity check
-			kubernetes.GatewayMustHaveLatestConditions(t, updated)
+			kubernetes.GatewayMustHaveLatestConditions(t, s.TimeoutConfig, updated)
 
 			require.NotEqual(t, original.Generation, updated.Generation, "generation should change after an update")
 		})

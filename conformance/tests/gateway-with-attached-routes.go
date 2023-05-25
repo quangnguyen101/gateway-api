@@ -34,7 +34,10 @@ func init() {
 var GatewayWithAttachedRoutes = suite.ConformanceTest{
 	ShortName:   "GatewayWithAttachedRoutes",
 	Description: "A Gateway in the gateway-conformance-infra namespace should be attached to routes.",
-	Manifests:   []string{"tests/gateway-with-attached-routes.yaml"},
+	Features: []suite.SupportedFeature{
+		suite.SupportGateway,
+	},
+	Manifests: []string{"tests/gateway-with-attached-routes.yaml"},
 	Test: func(t *testing.T, s *suite.ConformanceTestSuite) {
 		t.Run("Gateway listener should have one valid http routes attached", func(t *testing.T) {
 			gwNN := types.NamespacedName{Name: "gateway-with-one-attached-route", Namespace: "gateway-conformance-infra"}
@@ -45,7 +48,7 @@ var GatewayWithAttachedRoutes = suite.ConformanceTest{
 					Kind:  v1beta1.Kind("HTTPRoute"),
 				}},
 				Conditions: []metav1.Condition{{
-					Type:   string(v1beta1.RouteConditionAccepted),
+					Type:   string(v1beta1.ListenerConditionAccepted),
 					Status: metav1.ConditionTrue,
 					Reason: "", //any reason
 				}},
@@ -64,7 +67,7 @@ var GatewayWithAttachedRoutes = suite.ConformanceTest{
 					Kind:  v1beta1.Kind("HTTPRoute"),
 				}},
 				Conditions: []metav1.Condition{{
-					Type:   string(v1beta1.RouteConditionAccepted),
+					Type:   string(v1beta1.ListenerConditionAccepted),
 					Status: metav1.ConditionTrue,
 					Reason: "", //any reason
 				}},

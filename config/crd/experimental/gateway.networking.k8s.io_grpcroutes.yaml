@@ -2,8 +2,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    api-approved.kubernetes.io: https://github.com/kubernetes-sigs/gateway-api/pull/1538
-    gateway.networking.k8s.io/bundle-version: v0.6.1
+    api-approved.kubernetes.io: https://github.com/kubernetes-sigs/gateway-api/pull/1923
+    gateway.networking.k8s.io/bundle-version: v0.7.0-dev
     gateway.networking.k8s.io/channel: experimental
   creationTimestamp: null
   name: grpcroutes.gateway.networking.k8s.io
@@ -474,9 +474,20 @@ spec:
                                           type: string
                                         kind:
                                           default: Service
-                                          description: Kind is kind of the referent.
-                                            For example "HTTPRoute" or "Service".
-                                            Defaults to "Service" when not specified.
+                                          description: "Kind is the Kubernetes resource
+                                            kind of the referent. For example \"Service\".
+                                            \n Defaults to \"Service\" when not specified.
+                                            \n ExternalName services can refer to
+                                            CNAME DNS records that may live outside
+                                            of the cluster and as such are difficult
+                                            to reason about in terms of conformance.
+                                            They also may not be safe to forward to
+                                            (see CVE-2021-25740 for more information).
+                                            Implementations SHOULD NOT support ExternalName
+                                            Services. \n Support: Core (Services with
+                                            a type other than ExternalName) \n Support:
+                                            Implementation-specific (Services with
+                                            type ExternalName)"
                                           maxLength: 63
                                           minLength: 1
                                           pattern: ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
@@ -490,7 +501,8 @@ spec:
                                           description: "Namespace is the namespace
                                             of the backend. When unspecified, the
                                             local namespace is inferred. \n Note that
-                                            when a namespace is specified, a ReferenceGrant
+                                            when a namespace different than the local
+                                            namespace is specified, a ReferenceGrant
                                             object is required in the referent namespace
                                             to allow that namespace's owner to accept
                                             the reference. See the ReferenceGrant
@@ -522,7 +534,7 @@ spec:
                                 responseHeaderModifier:
                                   description: "ResponseHeaderModifier defines a schema
                                     for a filter that modifies response headers. \n
-                                    Support: Extended \n <gateway:experimental>"
+                                    Support: Extended"
                                   properties:
                                     add:
                                       description: "Add adds the given header(s) (name,
@@ -674,9 +686,17 @@ spec:
                             type: string
                           kind:
                             default: Service
-                            description: Kind is kind of the referent. For example
-                              "HTTPRoute" or "Service". Defaults to "Service" when
-                              not specified.
+                            description: "Kind is the Kubernetes resource kind of
+                              the referent. For example \"Service\". \n Defaults to
+                              \"Service\" when not specified. \n ExternalName services
+                              can refer to CNAME DNS records that may live outside
+                              of the cluster and as such are difficult to reason about
+                              in terms of conformance. They also may not be safe to
+                              forward to (see CVE-2021-25740 for more information).
+                              Implementations SHOULD NOT support ExternalName Services.
+                              \n Support: Core (Services with a type other than ExternalName)
+                              \n Support: Implementation-specific (Services with type
+                              ExternalName)"
                             maxLength: 63
                             minLength: 1
                             pattern: ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
@@ -689,11 +709,11 @@ spec:
                           namespace:
                             description: "Namespace is the namespace of the backend.
                               When unspecified, the local namespace is inferred. \n
-                              Note that when a namespace is specified, a ReferenceGrant
-                              object is required in the referent namespace to allow
-                              that namespace's owner to accept the reference. See
-                              the ReferenceGrant documentation for details. \n Support:
-                              Core"
+                              Note that when a namespace different than the local
+                              namespace is specified, a ReferenceGrant object is required
+                              in the referent namespace to allow that namespace's
+                              owner to accept the reference. See the ReferenceGrant
+                              documentation for details. \n Support: Core"
                             maxLength: 63
                             minLength: 1
                             pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
@@ -923,9 +943,18 @@ spec:
                                     type: string
                                   kind:
                                     default: Service
-                                    description: Kind is kind of the referent. For
-                                      example "HTTPRoute" or "Service". Defaults to
-                                      "Service" when not specified.
+                                    description: "Kind is the Kubernetes resource
+                                      kind of the referent. For example \"Service\".
+                                      \n Defaults to \"Service\" when not specified.
+                                      \n ExternalName services can refer to CNAME
+                                      DNS records that may live outside of the cluster
+                                      and as such are difficult to reason about in
+                                      terms of conformance. They also may not be safe
+                                      to forward to (see CVE-2021-25740 for more information).
+                                      Implementations SHOULD NOT support ExternalName
+                                      Services. \n Support: Core (Services with a
+                                      type other than ExternalName) \n Support: Implementation-specific
+                                      (Services with type ExternalName)"
                                     maxLength: 63
                                     minLength: 1
                                     pattern: ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
@@ -938,11 +967,12 @@ spec:
                                   namespace:
                                     description: "Namespace is the namespace of the
                                       backend. When unspecified, the local namespace
-                                      is inferred. \n Note that when a namespace is
-                                      specified, a ReferenceGrant object is required
-                                      in the referent namespace to allow that namespace's
-                                      owner to accept the reference. See the ReferenceGrant
-                                      documentation for details. \n Support: Core"
+                                      is inferred. \n Note that when a namespace different
+                                      than the local namespace is specified, a ReferenceGrant
+                                      object is required in the referent namespace
+                                      to allow that namespace's owner to accept the
+                                      reference. See the ReferenceGrant documentation
+                                      for details. \n Support: Core"
                                     maxLength: 63
                                     minLength: 1
                                     pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
@@ -968,7 +998,7 @@ spec:
                           responseHeaderModifier:
                             description: "ResponseHeaderModifier defines a schema
                               for a filter that modifies response headers. \n Support:
-                              Extended \n <gateway:experimental>"
+                              Extended"
                             properties:
                               add:
                                 description: "Add adds the given header(s) (name,

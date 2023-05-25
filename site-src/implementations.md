@@ -6,10 +6,10 @@ Implementors and integrators of Gateway API are encouraged to update this docume
 
 ## Implementation Status
 
-
 - [Acnodal EPIC][1] (public preview)
+- [Amazon Elastic Kubernetes Service][23] (alpha)
 - [Apache APISIX][2] (alpha)
-- [BIG-IP Kubernetes Gateway][20]
+- [BIG-IP Kubernetes Gateway][20] (beta)
 - [Cilium][16] (beta)
 - [Contour][3] (beta)
 - [Emissary-Ingress (Ambassador API Gateway)][4] (alpha)
@@ -30,6 +30,7 @@ Implementors and integrators of Gateway API are encouraged to update this docume
 ## Integration Status
 - [Flagger][14] (public preview)
 - [cert-manager][15] (alpha)
+- [argo-rollouts][22] (alpha)
 
 [1]:#acnodal-epic
 [2]:#apisix
@@ -52,6 +53,8 @@ Implementors and integrators of Gateway API are encouraged to update this docume
 [19]:#litespeed-ingress-controller
 [20]:#big-ip-kubernetes-gateway
 [21]:#stunner
+[22]:#argo-rollouts
+[23]:#amazon-elastic-kubernetes-service
 
 ## Implementations
 
@@ -63,6 +66,14 @@ In this section you will find specific links to blog posts, documentation and ot
 Documentation can be found at [EPIC Application & API Gateway Service][epic]
 
 [epic]:https://www.epick8sgw.io
+
+### Amazon Elastic Kubernetes Service
+
+[Amazon Elastic Kubernetes Service (EKS)][eks] is a managed service that you can use to run Kubernetes on AWS without needing to install, operate, and maintain your own Kubernetes control plane or nodes. EKS's implementation of the Gateway API is through [AWS Gateway API Controller][eks-gateway] which provisions [Amazon VPC Lattice][vpc-lattice] Resources for gateway(s), HTTPRoute(s) in EKS clusters.
+
+[eks]:https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html
+[eks-gateway]:https://github.com/aws/aws-application-networking-k8s
+[vpc-lattice]:https://aws.amazon.com/vpc/lattice/
 
 ### APISIX
 
@@ -77,13 +88,15 @@ APISIX currently supports Gateway API `v1alpha2` version of the specification fo
 
 [BIG-IP Kubernetes Gateway][big-ip-kubernetes-gateway] is an open-source project that provides an implementation of the Gateway API using [F5 BIG-IP][f5bigip] as the data plane. It provides enterprises with high-performance Gateway API implementation.
 
-We are actively supporting various features of the Gateway API. For compatibility with the features of the Gateway API, please refer to [here][bigipgwfeatures]. For any questions about this project, welcome to create [Issues][bigipgwissues] or [PR][bigipgwpr].
+We are actively supporting various features of the Gateway API. For compatibility with the features of the Gateway API, please refer to [here][bigipgwfeatures]. For any questions about this project, welcome to create [Issues][bigipgwissues] or [PR][bigipgwpr]. Also, you are welcome to connect with us in the [slack channel][bigipgwslacklink].
+
 
 [big-ip-kubernetes-gateway]:https://gateway-api.f5se.io/
 [f5bigip]:https://f5.com
 [bigipgwfeatures]:https://github.com/f5devcentral/bigip-kubernetes-gateway/blob/master/docs/gateway-api-compatibility.md
 [bigipgwissues]:https://github.com/f5devcentral/bigip-kubernetes-gateway/issues
 [bigipgwpr]:https://github.com/f5devcentral/bigip-kubernetes-gateway/pulls
+[bigipgwslacklink]: https://gateway-api.f5se.io/Support-and-contact/
 
 ### Cilium
 
@@ -112,9 +125,9 @@ effort, check out the #development channel or join our [weekly developer meeting
 
 [Contour][contour] is a CNCF open source Envoy-based ingress controller for Kubernetes.
 
-Contour implements Gateway API v0.5.1, supporting the v1alpha2 and v1beta1 API versions.
-All [Standard channel][contour-standard] resources (GatewayClass, Gateway, HTTPRoute), plus ReferenceGrant and TLSRoute, are supported.
-Contour's implementation passes all Gateway API conformance tests included in the v0.5.1 release.
+Contour [v1.25.0][contour-release] implements Gateway API v0.6.2, supporting the v1alpha2 and v1beta1 API versions.
+All [Standard channel][contour-standard] resources (GatewayClass, Gateway, HTTPRoute, ReferenceGrant), plus TLSRoute and GRPCRoute, are supported.
+Contour's implementation passes all core and most extended Gateway API conformance tests included in the v0.6.2 release.
 
 See the [Contour Gateway API Guide][contour-guide] for information on how to deploy and use Contour's Gateway API implementation.
 
@@ -123,6 +136,7 @@ For help and support with Contour's implementation, [create an issue][contour-is
 _Some "extended" functionality is not implemented yet, [contributions welcome!][contour-contrib]._
 
 [contour]:https://projectcontour.io
+[contour-release]:https://github.com/projectcontour/contour/releases/tag/v1.25.0
 [contour-standard]:https://gateway-api.sigs.k8s.io/concepts/versioning/#release-channels-eg-experimental-standard
 [contour-guide]:https://projectcontour.io/guides/gateway-api/
 [contour-issue-new]:https://github.com/projectcontour/contour/issues/new/choose
@@ -141,15 +155,15 @@ See [here][emissary-gateway-api] for more details on using the Gateway API with 
 
 ### Envoy Gateway
 
-[Envoy Gateway][eg-home] is an [Envoy][envoy-org] subproject for managing Envoy-based application gateways. The
-[v0.2][eg-02] release includes support for most `v1beta1` Gateway API features and passes core conformance tests
-included in the v0.5.1 release. Use the [quickstart][eg-quickstart] to get Envoy Gateway running with Gateway API in a
+[Envoy Gateway][eg-home] is an [Envoy][envoy-org] subproject for managing Envoy-based application gateways. The supported
+APIs and fields of the Gateway API are outlined [here][eg-supported]. 
+Use the [quickstart][eg-quickstart] to get Envoy Gateway running with Gateway API in a
 few simple steps.
 
 [eg-home]:https://gateway.envoyproxy.io/
 [envoy-org]:https://github.com/envoyproxy
-[eg-02]:https://gateway.envoyproxy.io/v0.2.0/releases/v0.2.html
-[eg-quickstart]:https://gateway.envoyproxy.io/v0.2.0/user/quickstart.html
+[eg-supported]: https://gateway.envoyproxy.io/v0.4.0/design/gatewayapi-support.html
+[eg-quickstart]:https://gateway.envoyproxy.io/v0.4.0/user/quickstart.html
 
 ### Flomesh Service Mesh (FSM)
 
@@ -289,6 +303,7 @@ Traefik is currently working on implementing UDP, and ReferenceGrant. Status upd
 [traefik]:https://traefik.io
 [traefik-1]:https://doc.traefik.io/traefik/routing/providers/kubernetes-gateway/
 
+
 ## Integrations
 
 In this section you will find specific links to blog posts, documentation and other Gateway API references for specific integrations.
@@ -297,7 +312,7 @@ In this section you will find specific links to blog posts, documentation and ot
 
 [Flagger][flagger] is a progressive delivery tool that automates the release process for applications running on Kubernetes.
 
-Flagger can be used to automate canary deployments and A/B testing using Gateway API. It currently supports the `v1alpha2` spec of Gateway API. You can refer to [this tutorial][flagger-tutorial] to use Flagger with any implementation of Gateway API.
+Flagger can be used to automate canary deployments and A/B testing using Gateway API. It supports both the `v1alpha2` and `v1beta1` spec of Gateway API. You can refer to [this tutorial][flagger-tutorial] to use Flagger with any implementation of Gateway API.
 
 [flagger]:https://flagger.app
 [flagger-tutorial]:https://docs.flagger.app/tutorials/gatewayapi-progressive-delivery
@@ -310,3 +325,10 @@ cert-manager can generate TLS certificates for Gateway resources. This is config
 
 [cert-manager]:https://cert-manager.io/
 [cert-manager-docs]:https://cert-manager.io/docs/usage/gateway/
+
+### Argo rollouts
+
+[Argo Rollouts][argo-rollouts] is a progressive delivery controller for Kubernetes. It supports several advanced deployment methods such as blue/green and canaries. Argo Rollouts supports the Gateway API via [a plugin][argo-rollouts-plugin].
+
+[argo-rollouts]:https://argo-rollouts.readthedocs.io/en/stable/
+[argo-rollouts-plugin]:https://github.com/argoproj-labs/rollouts-gatewayapi-trafficrouter-plugin/

@@ -58,6 +58,7 @@ nav:
     - Simple Gateway: guides/simple-gateway.md
     - HTTP routing: guides/http-routing.md
     - HTTP redirects and rewrites: guides/http-redirect-rewrite.md
+    - HTTP header modifier: guides/http-header-modifier.md
     - HTTP traffic splitting: guides/traffic-splitting.md
     - Cross-Namespace routing: guides/multiple-ns.md
     - TLS: guides/tls.md
@@ -82,21 +83,24 @@ nav:
         - geps/gep-1426.md
         - geps/gep-1324.md
         - geps/gep-1282.md
+        - geps/gep-1619.md
+        - geps/gep-1897.md
       - Prototyping:
         - geps/gep-1709.md
       - Experimental:
-        - geps/gep-1323.md
+        - geps/gep-1748.md
         - geps/gep-1016.md
         - geps/gep-957.md
-        - geps/gep-726.md
         - geps/gep-713.md
       - Standard:
         - geps/gep-1364.md
+        - geps/gep-1323.md
         - geps/gep-922.md
         - geps/gep-917.md
         - geps/gep-851.md
         - geps/gep-820.md
         - geps/gep-746.md
+        - geps/gep-726.md
         - geps/gep-724.md
         - geps/gep-718.md
         - geps/gep-709.md
@@ -105,6 +109,7 @@ nav:
     - Developer Guide: contributing/devguide.md
     - Enhancement Requests: contributing/enhancement-requests.md
     - GAMMA: contributing/gamma.md
+    - Contributor Ladder: contributing/contributor-ladder.md
   - Blog:
     - Index: blog/index.md
     - 2022:
