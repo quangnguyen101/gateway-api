@@ -50,7 +50,8 @@ Session.vim
 /www/test_out
 .*.timestamp
 /site
-admission
+go.work
+go.work.sum
 
 /cache
 .venv/

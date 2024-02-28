@@ -1,5 +1,9 @@
 # ReferenceGrant
 
+??? success "Standard Channel in v0.6.0+"
+
+    The `ReferenceGrant` resource is Beta and part of the Standard Channel in `v0.6.0+`.
+
 !!! note
     This resource was originally named "ReferencePolicy". It was renamed
     to "ReferenceGrant" to avoid any confusion with policy attachment.
@@ -82,7 +86,7 @@ While the API is simplistic in nature, it comes with a few notable decisions:
    other. This makes it impossible for them to conflict with each other.
 
 Please see the [API
-Specification](/references/spec#gateway.networking.k8s.io/v1alpha2.ReferenceGrant)
+Specification](/reference/spec#gateway.networking.k8s.io/v1alpha2.ReferenceGrant)
 for more details on how specific ReferenceGrant fields are interpreted.
 
 ## Implementation Guidelines

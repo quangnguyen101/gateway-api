@@ -1,5 +1,9 @@
 # GatewayClass
 
+??? success "Standard Channel in v0.5.0+"
+
+    The `GatewayClass` resource is Beta and part of the Standard Channel in `v0.5.0+`.
+
 [GatewayClass][gatewayclass] is cluster-scoped resource defined by the
 infrastructure provider. This resource represents a class of Gateways that can
 be instantiated.
@@ -135,5 +139,5 @@ example.net/gateway/v2.1 // Use version 2.1
 example.net/gateway      // Use the default version
 ```
 
-[gatewayclass]: /references/spec/#gateway.networking.k8s.io/v1beta1.GatewayClass
+[gatewayclass]: /reference/spec/#gateway.networking.k8s.io/v1.GatewayClass
 [ingress-class-api]: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class

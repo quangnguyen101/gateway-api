@@ -4,16 +4,13 @@ This document provides an overview of Gateway API.
 
 ## Roles and personas
 
-There are 3 primary roles in Gateway API:
+There are 3 primary roles in Gateway API, as described in [roles and personas]:
 
-- Infrastructure Provider
-- Cluster Operator
-- Application Developer
+- **Ian** (he/him): Infrastructure Provider
+- **Chihiro** (they/them): Cluster Operator
+- **Ana** (she/her): Application Developer
 
-There could be a fourth role of Application Admin in some use cases.
-
-Please refer to the [roles and personas](/concepts/security-model#roles-and-personas)
-section in the Security model for details.
+[roles and personas]:/concepts/roles-and-personas
 
 ## Resource model
 
@@ -34,13 +31,18 @@ the cluster.
 
 ### GatewayClass
 
+??? success "Standard Channel in v0.5.0+"
+    The `GatewayClass` resource is GA and has been part of the Standard Channel in
+    `v0.5.0+`. For more information on release channels, refer to the [related
+    documentation](/concepts/versioning).
+
 GatewayClass defines a set of Gateways that share a common configuration and
 behaviour. Each GatewayClass will be handled by a single controller, although
 controllers may handle more than one GatewayClass.
 
 GatewayClass is a cluster-scoped resource. There must be at least one
 GatewayClass defined in order to be able to have functional Gateways. A
-controller that implements the Gateway API does so by providing an associated
+controller that implements Gateway API does so by providing an associated
 GatewayClass resource that the user can reference from their Gateway(s).
 
 This is similar to
@@ -52,6 +54,11 @@ PersistentVolumes. In Ingress v1beta1, the closest analog to GatewayClass is the
 IngressClass object.
 
 ### Gateway
+
+??? success "Standard Channel in v0.5.0+"
+    The `Gateway` resource is GA and has been part of the Standard Channel since
+    `v0.5.0`. For more information on release channels, refer to the [related
+    documentation](/concepts/versioning).
 
 A Gateway describes how traffic can be translated to Services within the
 cluster. That is, it defines a request for a way to translate traffic from
@@ -87,6 +94,11 @@ types may be added to the API in future.
 
 #### HTTPRoute
 
+??? success "Standard Channel in v0.5.0+"
+    The `HTTPRoute` resource is GA and has been part of the Standard Channel in
+    `v0.5.0+`. For more information on release channels, refer to the [related
+    documentation](/concepts/versioning).
+
 HTTPRoute is for multiplexing HTTP or terminated HTTPS connections. It's intended
 for use in cases where you want to inspect the HTTP stream and use HTTP request data
 for either routing or modification, for example using HTTP Headers for routing, or
@@ -94,11 +106,11 @@ modifying them in-flight.
 
 #### TLSRoute
 
-!!! info "Experimental Channel"
+??? example "Experimental Channel in v0.3.0+"
 
-    The `TLSRoute` resource described below is currently only included in the
-    "Experimental" channel of Gateway API. For more information on release
-    channels, refer to the [related documentation](https://gateway-api.sigs.k8s.io/concepts/versioning).
+    The `TLSRoute` resource is Alpha and has been part of the Experimental
+    Channel since `v0.3.0+`. For more information on release channels, refer to
+    the [related documentation](/concepts/versioning).
 
 TLSRoute is for multiplexing TLS connections, discriminated via SNI. It's intended
 for where you want to use the SNI as the main routing method, and are not interested
@@ -107,11 +119,11 @@ connection is proxied without any inspection to the backend.
 
 #### TCPRoute and UDPRoute
 
-!!! info "Experimental Channel"
+??? example "Experimental Channel in v0.3.0+"
 
-    The `TCPRoute` and `UDPRoute` resources described below are currently only included in the
-    "Experimental" channel of Gateway API. For more information on release
-    channels, refer to the [related documentation](https://gateway-api.sigs.k8s.io/concepts/versioning).
+    The `TCPRoute` and `UDPRoute` resources are Alpha and have been part of the
+    Experimental Channel since `v0.3.0`. For more information on release
+    channels, refer to the [related documentation](/concepts/versioning).
 
 TCPRoute (and UDPRoute) are intended for use for mapping one or more ports
 to a single backend. In this case, there is no discriminator you can
@@ -123,11 +135,11 @@ is passed through to the backend.
 
 #### GRPCRoute
 
-!!! info "Experimental Channel"
+??? example "Experimental Channel in v0.6.0+"
 
-    The `GRPCRoute` resource described below is currently only included in the
-    "Experimental" channel of Gateway API. For more information on release
-    channels, refer to the [related documentation](https://gateway-api.sigs.k8s.io/concepts/versioning).
+    The `GRPCRoute` resource is Alpha and has been part of the Experimental
+    Channel since `v0.6.0`. For more information on release channels, refer to
+    the [related documentation](/concepts/versioning).
 
 GRPCRoute is for idiomatically routing gRPC traffic. Gateways supporting
 GRPCRoute are required to support HTTP/2 without an initial upgrade from HTTP/1,
@@ -152,11 +164,7 @@ to configure that with existing Gateway API resources, but implementations may
 provide custom configuration for this until there is a standardized approach
 defined by Gateway API.
 
-### Attaching Routes to Gateways
-
-!!! note
-    This section has changed significantly between v1alpha1 and v1alpha2. This
-    section describes the v1alpha2 approach.
+## Attaching Routes to Gateways
 
 When a Route attaches to a Gateway, it represents configuration that is applied
 on the Gateway that configures the underlying load balancer or proxy. How and
@@ -179,19 +187,21 @@ different relationships that Gateways and Routes can have:
 
 ### Example
 
-A Kubernetes cluster admin has deployed a Gateway `shared-gw` in the `Infra`
-Namespace to be used by different application teams for exposing their
-applications outside the cluster. Teams A and B (in Namespaces `A` and `B`
-respectively) attach their Routes to this Gateway. They are unaware of each
-other and as long as their Route rules do not conflict with each other they
-can continue operating in isolation. Team C has special networking needs
-(perhaps performance, security, or criticality) and they need a dedicated
-Gateway to proxy their application to the outside world. Team C deploys their
-own Gateway `dedicated-gw`  in the `C` Namespace that can only be used by apps
-in the `C` Namespace.
+[Chihiro] has deployed a Gateway `shared-gw` in the `infra` Namespace to be
+used by different application teams for exposing their applications outside
+the cluster. Teams A and B (in Namespaces `A` and `B` respectively) attach
+their Routes to this Gateway. They are unaware of each other and as long as
+their Route rules do not conflict with each other they can continue operating
+in isolation. Team C has special networking needs (perhaps performance,
+security, or criticality) and they need a dedicated Gateway to proxy their
+application to the outside world. Team C deploys their own Gateway
+`dedicated-gw`  in the `C` Namespace that can only be used by apps in the `C`
+Namespace.
 
 <!-- source: https://docs.google.com/presentation/d/1neBkFDTZ__vRoDXIWvAcxk2Pb7-evdBT6ykw_frf9QQ/edit?usp=sharing -->
 ![route binding](/images/gateway-route-binding.png)
+
+[Chihiro]:/concepts/roles-and-personas#Chihiro
 
 ### How it Works
 
@@ -202,16 +212,16 @@ The following is required for a Route to be attached to a Gateway:
 
 #### Referencing Gateways
 
-!!! info "Experimental Channel"
-
+??? example "Experimental Channel"
     The `Port` field described below is currently only included in the
     "Experimental" channel of Gateway API. For more information on release
-    channels, refer to the [related documentation](https://gateway-api.sigs.k8s.io/concepts/versioning/#adding-experimental-fields).
+    channels, refer to the [related documentation](/concepts/versioning/#adding-experimental-fields).
 
 A Route can reference a Gateway by specifying the namespace (optional if the
 Route and the Gateway are in the same namespace) and name of the Gateway in
-a `parentRef`. A Route can further select a subset of listeners under the
-Gateway using the following fields in `parentRef`:
+a `parentRef`. By default, a Route will attach to all listeners of a Gateway,
+however it can restrict the selection to a subset of listeners using the
+following fields in `parentRef`:
 
 1. **SectionName** When `sectionName` is set, the Route selects the listener
    with the specified name.
@@ -233,13 +243,13 @@ following mechanisms:
 2. **Namespaces:** The `allowedRoutes.namespaces` field on a listener can be
    used to restrict where Routes may be attached from. The `namespaces.from`
    field supports the following values:
-    * `SameNamespace` is the default option. Only Routes in the same namespace
+    * `Same` is the default option. Only Routes in the same namespace
       as this Gateway may be attached.
     * `All` will allow Routes from all Namespaces to be attached.
     * `Selector` means that Routes from a subset of Namespaces selected by a
       Namespace label selector may be attached to this Gateway. When `Selector`
       is used, the `namespaces.selector` field must be used to specify label
-      selectors. This field is not supported with `All` or `SameNamespace`.
+      selectors. This field is not supported with `All` or `Same`.
 3. **Kinds:** The `allowedRoutes.kinds` field on a listener can be used to
    restrict the kinds of Routes that may be attached.
 
@@ -279,28 +289,52 @@ relationships between the different resources:
 <!-- source: https://docs.google.com/document/d/1BxYbDovMwnEqe8lj8JwHo8YxHAt3oC7ezhlFsG_tyag/edit#heading=h.8du598fded3c -->
 ![schema](/images/schema-uml.svg)
 
-## Request flow
+### Request flow
 
-A typical client/gateway API request flow for a gateway implemented using a
+A typical [north/south] API request flow for a gateway implemented using a
 reverse proxy is:
 
- 1. A client makes a request to <http://foo.example.com>.
- 2. DNS resolves the name to a `Gateway` address.
- 3. The reverse proxy receives the request on a `Listener` and uses the [Host
- header](https://tools.ietf.org/html/rfc7230#section-5.4) to match an
- `HTTPRoute`.
- 4. Optionally, the reverse proxy can perform request header and/or path
- matching based on `match` rules of the `HTTPRoute`.
- 5. Optionally, the reverse proxy can modify the request, i.e. add/remove
- headers, based on `filter` rules of the `HTTPRoute`.
- 6. Lastly, the reverse proxy forwards the request to one or more objects, i.e.
- `Service`, in the cluster based on `backendRefs` rules of the `HTTPRoute`.
+1. A client makes a request to <http://foo.example.com>.
+2. DNS resolves the name to a `Gateway` address.
+3. The reverse proxy receives the request on a `Listener` and uses the [Host
+   header](https://tools.ietf.org/html/rfc7230#section-5.4) to match an
+   `HTTPRoute`.
+4. Optionally, the reverse proxy can perform request header and/or path
+   matching based on `match` rules of the `HTTPRoute`.
+5. Optionally, the reverse proxy can modify the request, i.e. add/remove
+   headers, based on `filter` rules of the `HTTPRoute`.
+6. Lastly, the reverse proxy forwards the request to one or more objects, i.e.
+   `Service`, in the cluster based on `backendRefs` rules of the `HTTPRoute`.
 
-## TLS Configuration
+[north/south]:/concepts/glossary#northsouth-traffic
+
+### TLS Configuration
 
 TLS is configured on Gateway listeners, and may be referred to across namespaces.
 
 Please refer to the [TLS details](/guides/tls) guide for a deep dive on TLS.
+
+## Attaching Routes to Services
+
+!!! danger "Experimental in v0.8.0"
+
+    The [GAMMA initiative][gamma] work for supporting service mesh use cases
+    is _experimental_ in `v0.8.0`. It is possible that it will change; we do
+    not recommend it in production at this point.
+
+    In particular, binding Routes directly to Services seems to be the current
+    best choice for configuring mesh routing, but it is still **experimental**
+    and thus **subject to change**.
+
+When using Gateway API to configure a [service mesh], the Route will
+attach directly to a Service, representing configuration meant to be applied
+to any traffic directed to the Service. How and which Routes attach to a given
+Service is controlled by the Routes themselves (working with Kubernetes RBAC),
+as covered in the [GAMMA routing documentation].
+
+[GAMMA]:/concepts/gamma
+[GAMMA routing documentation]:/concepts/gamma#gateway-api-for-mesh
+[service mesh]:/concepts/glossary#service-mesh
 
 ## Extension points
 

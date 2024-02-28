@@ -1,6 +1,10 @@
 # Gateway
 
-A `Gateway` is 1:1 with the life cycle of the configuration of infrastructure.
+??? success "Standard Channel in v0.5.0+"
+
+    The `Gateway` resource is Beta and part of the Standard Channel in `v0.5.0+`.
+
+A `Gateway` is 1:1 with the lifecycle of the configuration of infrastructure.
 When a user creates a `Gateway`, some load balancing infrastructure is
 provisioned or configured (see below for details) by the `GatewayClass`
 controller. `Gateway` is the resource that triggers actions in this API. Other

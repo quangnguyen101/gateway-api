@@ -4,7 +4,7 @@
 
     The `GRPCRoute` resource described below is currently only included in the
     "Experimental" channel of Gateway API. For more information on release
-    channels, refer to the [related documentation](https://gateway-api.sigs.k8s.io/concepts/versioning).
+    channels, refer to the [related documentation](/concepts/versioning).
 
 The [GRPCRoute resource](/api-types/grpcroute) allows you to match on gRPC traffic and
 direct it to Kubernetes backends. This guide shows how the GRPCRoute matches
@@ -80,6 +80,6 @@ been considered.
 {% include 'experimental/v1alpha2/grpc-routing/reflection-grpcroute.yaml' %}
 ```
 
-[gateway]: /references/spec/#gateway.networking.k8s.io/v1beta1.Gateway
-[spec]: /references/spec/#gateway.networking.k8s.io%2fv1alpha2.GRPCRouteSpec
+[gateway]: /reference/spec/#gateway.networking.k8s.io/v1.Gateway
+[spec]: /reference/spec/#gateway.networking.k8s.io%2fv1alpha2.GRPCRouteSpec
 [svc]:https://kubernetes.io/docs/concepts/services-networking/service/
