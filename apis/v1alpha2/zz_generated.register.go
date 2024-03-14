@@ -60,6 +60,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
 		&BackendTLSPolicy{},
 		&BackendTLSPolicyList{},
+		&EgressRoute{},
+		&EgressRouteList{},
 		&GRPCRoute{},
 		&GRPCRouteList{},
 		&Gateway{},

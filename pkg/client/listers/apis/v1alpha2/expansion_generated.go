@@ -26,6 +26,14 @@ type BackendTLSPolicyListerExpansion interface{}
 // BackendTLSPolicyNamespaceLister.
 type BackendTLSPolicyNamespaceListerExpansion interface{}
 
+// EgressRouteListerExpansion allows custom methods to be added to
+// EgressRouteLister.
+type EgressRouteListerExpansion interface{}
+
+// EgressRouteNamespaceListerExpansion allows custom methods to be added to
+// EgressRouteNamespaceLister.
+type EgressRouteNamespaceListerExpansion interface{}
+
 // GRPCRouteListerExpansion allows custom methods to be added to
 // GRPCRouteLister.
 type GRPCRouteListerExpansion interface{}
