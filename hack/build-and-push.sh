@@ -20,6 +20,13 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+if [[ -z "${VERIFY-}" ]];
+then
+  export DOCKER_PUSH_FLAG="--push"
+else
+  export DOCKER_PUSH_FLAG=""
+fi
+
 if [[ -z "${GIT_TAG-}" ]];
 then
     echo "GIT_TAG env var must be set and nonempty."
@@ -44,6 +51,8 @@ then
     exit 1
 fi
 
+
+
 # If our base ref == "main" then we will tag :latest.
 VERSION_TAG=latest
 
@@ -65,28 +74,22 @@ fi
 # Support multi-arch image build and push.
 BUILDX_PLATFORMS="linux/amd64,linux/arm64"
 
-echo "Building and pushing admission-server image...${BUILDX_PLATFORMS}"
+echo "Building and pushing echo-advanced image (from Istio) ...${BUILDX_PLATFORMS}"
 
-# First, build the image, with the version info passed in.
-# Note that an image will *always* be built tagged with the GIT_TAG, so we know when it was built.
-# And, we add an extra version tag - either :latest or semver.
-# The buildx integrate build and push in one line.
 docker buildx build \
-    -t ${REGISTRY}/admission-server:${GIT_TAG} \
-    -t ${REGISTRY}/admission-server:${VERSION_TAG} \
-    --build-arg "COMMIT=${COMMIT}" \
-    --build-arg "TAG=${BINARY_TAG}" \
+    -t ${REGISTRY}/echo-advanced:${GIT_TAG} \
+    -t ${REGISTRY}/echo-advanced:${VERSION_TAG} \
     --platform ${BUILDX_PLATFORMS} \
-    --push \
-    -f docker/Dockerfile.webhook \
+    ${DOCKER_PUSH_FLAG} \
+    -f docker/Dockerfile.echo-advanced \
     .
 
-echo "Building and pushing echo-server image...${BUILDX_PLATFORMS}"
+echo "Building and pushing echo-basic image (previously in Ingress Controller Conformance Repo) ...${BUILDX_PLATFORMS}"
 
 docker buildx build \
-    -t ${REGISTRY}/echo-server:${GIT_TAG} \
-    -t ${REGISTRY}/echo-server:${VERSION_TAG} \
+    -t ${REGISTRY}/echo-basic:${GIT_TAG} \
+    -t ${REGISTRY}/echo-basic:${VERSION_TAG} \
     --platform ${BUILDX_PLATFORMS} \
-    --push \
-    -f docker/Dockerfile.echo \
+    ${DOCKER_PUSH_FLAG} \
+    -f docker/Dockerfile.echo-basic \
     .

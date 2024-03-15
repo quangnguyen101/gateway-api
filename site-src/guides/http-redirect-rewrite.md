@@ -12,7 +12,7 @@ use both filter types at once.
 
 Redirects return HTTP 3XX responses to a client, instructing it to retrieve a
 different resource. [`RequestRedirect` rule
-filters](/references/spec/#gateway.networking.k8s.io/v1beta1.HTTPRequestRedirectFilter)
+filters](/reference/spec/#gateway.networking.k8s.io/v1.HTTPRequestRedirectFilter)
 instruct Gateways to emit a redirect response to requests matching a filtered
 HTTPRoute rule.
 
@@ -21,7 +21,7 @@ example, to issue a permanent redirect (301) from HTTP to HTTPS, configure
 `requestRedirect.statusCode=301` and `requestRedirect.scheme="https"`:
 
 ```yaml
-{% include 'standard/http-redirect-rewrite/httproute-redirect-https.yaml' %}
+{% include 'standard/http-redirect-rewrite/httproute-redirect-http.yaml' %}
 ```
 
 Redirects change configured URL components to match the redirect configuration
@@ -31,13 +31,33 @@ example, the request `GET http://redirect.example/cinnamon` will result in a
 hostname (`redirect.example`), path (`/cinnamon`), and port (implicit) remain
 unchanged.
 
+### HTTP-to-HTTPS redirects
+
+To redirect HTTP traffic to HTTPS, you need to have a Gateway with both HTTP
+and HTTPS listeners.
+
+```yaml
+{% include 'standard/http-redirect-rewrite/gateway-redirect-http-https.yaml' %}
+```
+There are multiple ways to secure a Gateway. In this example, it is secured
+using a Kubernetes Secret(`redirect-example` in the `certificateRefs` section).
+
+You need a HTTPRoute that attaches to the HTTP listener and does the redirect
+to HTTPS. Here we set `sectionName` to be `http` so it only selects the
+listener named `http`.
+
+```yaml
+{% include 'standard/http-redirect-rewrite/httproute-redirect-http.yaml' %}
+```
+
+You also need a HTTPRoute that attaches to the HTTPS listener that forwards
+HTTPS traffic to application backends.
+
+```yaml
+{% include 'standard/http-redirect-rewrite/httproute-redirect-https.yaml' %}
+```
+
 ### Path redirects
-
-!!! info "Experimental Channel"
-
-    The `Path` field described below is currently only included in the
-    "Experimental" channel of Gateway API. Starting in v0.7.0, this
-    feature will graduate to the "Standard" channel.
 
 Path redirects use an HTTP Path Modifier to replace either entire paths or path
 prefixes. For example, the HTTPRoute below will issue a 302 redirect to all
@@ -67,7 +87,7 @@ https://redirect.example/paprika/teaspoon` response headers.
 
 Rewrites modify components of a client request before proxying it upstream. A
 [`URLRewrite`
-filter](/references/spec/#gateway.networking.k8s.io/v1beta1.HTTPURLRewriteFilter)
+filter](/reference/spec/#gateway.networking.k8s.io/v1.HTTPURLRewriteFilter)
 can change the upstream request hostname and/or path. For example, the
 following HTTPRoute will accept a request for
 `https://rewrite.example/cardamom` and send it upstream to `example-svc` with

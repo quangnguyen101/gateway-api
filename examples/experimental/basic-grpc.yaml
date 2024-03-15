@@ -1,22 +1,22 @@
 #$ Used in:
 #$ - site-src/api-types/grpcroute.md
-apiVersion: gateway.networking.k8s.io/v1beta1
+apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: acme-lb
+  name: example
 spec:
   controllerName: acme.io/gateway-controller
   parametersRef:
-    name: acme-lb
+    name: example
     group: acme.io
     kind: Parameters
 ---
-apiVersion: gateway.networking.k8s.io/v1beta1
+apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: my-gateway
 spec:
-  gatewayClassName: acme-lb
+  gatewayClassName: example
   listeners:  # Use GatewayClass defaults for listener definition.
   - name: https
     protocol: HTTPS

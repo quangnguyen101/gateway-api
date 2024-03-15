@@ -1,12 +1,12 @@
 #$ Used in:
 #$ - site-src/v1alpha2/guides/tls.md
-apiVersion: gateway.networking.k8s.io/v1beta1
+apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: cross-namespace-tls-gateway
   namespace: gateway-api-example-ns1
 spec:
-  gatewayClassName: acme-lb
+  gatewayClassName: example
   listeners:
   - name: https
     protocol: HTTPS

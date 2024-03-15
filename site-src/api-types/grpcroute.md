@@ -1,11 +1,10 @@
 # GRPCRoute
 
-!!! info "Experimental Channel"
+??? example "Experimental Channel in v0.6.0+"
 
-    The `GRPCRoute` resource described below is currently only included in the
-    "Experimental" channel of Gateway API. For more information on release
-    channels, refer to the [related documentation](https://gateway-api.sigs.k8s.io/concepts/versioning).
-
+    The `GRPCRoute` resource is Alpha and part of the Experimental Channel in
+    `v0.6.0+`. For more information on release channels, refer to the [related
+    documentation](/concepts/versioning).
 
 [GRPCRoute][grpcroute] is a Gateway API type for specifying routing behavior
 of gRPC requests from a Gateway listener to an API object, i.e. Service.
@@ -37,7 +36,7 @@ the following criteria are met:
 - Users of the enapsulated protocol would experience a degraded user experience if forced to route at a lower layer.
 - The encapsulated protocol has a significant user base, particularly in the Kubernetes community.
 
-gRPC meets all of these criteria, so the decision was made to include `GRPCRoute`in the Gateway API.
+gRPC meets all of these criteria, so the decision was made to include `GRPCRoute`in Gateway API.
 
 ### Cross Serving
 
@@ -184,10 +183,11 @@ Conformance levels are defined by the filter type:
 
 Specifying a core filter multiple times has unspecified or custom conformance.
 
-All filters are expected to be compatible with each other. If an implementation
-cannot support other combinations of filters, they must clearly document that
-limitation. In all cases where incompatible or unsupported filters are
-specified, implementations MUST add a warning condition to status.
+If an implementation can not support a combinations of filters, they must clearly
+document that limitation. In cases where incompatible or unsupported
+filters are specified and cause the `Accepted` condition to be set to status
+`False`, implementations may use the `IncompatibleFilters` reason to specify
+this configuration error.
 
 #### BackendRefs (optional)
 
@@ -258,12 +258,12 @@ only one Route rule may match each request. For more information on how conflict
 resolution applies to merging, refer to the [API specification][grpcrouterule].
 
 
-[grpcroute]: /references/spec/#gateway.networking.k8s.io/v1alpha2.GRPCPRoute
-[grpcrouterule]: /references/spec/#gateway.networking.k8s.io/v1alpha2.GRPCRouteRule
-[hostname]: /references/spec/#gateway.networking.k8s.io/v1beta1.Hostname
+[grpcroute]: /reference/spec/#gateway.networking.k8s.io/v1alpha2.GRPCPRoute
+[grpcrouterule]: /reference/spec/#gateway.networking.k8s.io/v1alpha2.GRPCRouteRule
+[hostname]: /reference/spec/#gateway.networking.k8s.io/v1.Hostname
 [rfc-3986]: https://tools.ietf.org/html/rfc3986
-[matches]: /references/spec/#gateway.networking.k8s.io/v1alpha2.GRPCRouteMatch
-[filters]: /references/spec/#gateway.networking.k8s.io/v1alpha2.GRPCRouteFilter
-[backendRef]: /references/spec/#gateway.networking.k8s.io/v1alpha2.GRPCBackendRef
-[parentRef]: /references/spec/#gateway.networking.k8s.io/v1beta1.ParentRef
+[matches]: /reference/spec/#gateway.networking.k8s.io/v1alpha2.GRPCRouteMatch
+[filters]: /reference/spec/#gateway.networking.k8s.io/v1alpha2.GRPCRouteFilter
+[backendRef]: /reference/spec/#gateway.networking.k8s.io/v1alpha2.GRPCBackendRef
+[parentRef]: /reference/spec/#gateway.networking.k8s.io/v1.ParentRef
 
